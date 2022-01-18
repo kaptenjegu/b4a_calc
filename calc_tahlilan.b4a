@@ -1,0 +1,162 @@
+﻿Build1=Kaptenjegu,kj.calctahlilan,NoAds
+File1=awal.bal
+File2=datepicker.bal
+File3=home.bal
+File4=wm black.jpg
+File5=wm white.jpg
+FileGroup1=Default Group
+FileGroup2=Default Group
+FileGroup3=Default Group
+FileGroup4=Default Group
+FileGroup5=Default Group
+Group=Default Group
+Library1=core
+Library2=dateutils
+ManifestCode='This code will be applied to the manifest file during compilation.~\n~'You do not need to modify it in most cases.~\n~'See this link for for more information: https://www.b4x.com/forum/showthread.php?p=78136~\n~AddManifestText(~\n~<uses-sdk android:minSdkVersion="5" android:targetSdkVersion="28"/>~\n~<supports-screens android:largeScreens="true" ~\n~    android:normalScreens="true" ~\n~    android:smallScreens="true" ~\n~    android:anyDensity="true"/>)~\n~SetApplicationAttribute(android:icon, "@drawable/icon")~\n~SetApplicationAttribute(android:label, "$LABEL$")~\n~CreateResourceFromFile(Macro, Themes.DarkTheme)~\n~'End of default text.~\n~
+Module1=AnotherDatePicker
+Module2=home
+Module3=Starter
+NumberOfFiles=5
+NumberOfLibraries=2
+NumberOfModules=3
+Version=9.8
+@EndOfDesignText@
+#Region  Project Attributes 
+	#ApplicationLabel: Kalkulator Tahlilan
+	#VersionCode: 1
+	#VersionName: 
+	'SupportedOrientations possible values: unspecified, landscape or portrait.
+	#SupportedOrientations: portrait
+	#CanInstallToExternalStorage: False
+#End Region
+
+#Region  Activity Attributes 
+	#FullScreen: False
+	#IncludeTitle: False
+#End Region
+
+Sub Process_Globals
+	'These global variables will be declared once when the application starts.
+	'These variables can be accessed from all modules.
+
+End Sub
+
+Sub Globals
+	'These global variables will be redeclared each time the activity is created.
+	'These variables can only be accessed from this module.
+	Dim sptimer As Timer
+	Dim tgl_meninggal, tgl_7, tgl_40  As Long
+	Private pnlSP As Panel
+	Private Label1 As Label
+	Private lblResult As Label
+	Private AnotherDatePicker1 As AnotherDatePicker
+	
+End Sub
+
+Sub Activity_Create(FirstTime As Boolean)
+	Activity.LoadLayout("awal")
+	pnlSP.Visible = True
+	sptimer.Initialize("sptimer",5000)
+	sptimer.Enabled = True
+End Sub
+
+Sub sptimer_tick
+	pnlSP.Visible = False
+	sptimer.Enabled = False
+End Sub
+
+Sub Activity_KeyPress (KeyCode As Int) As Boolean
+	If KeyCode = KeyCodes.KEYCODE_BACK Then
+		If Msgbox2("Apakah Anda ingin keluar dari aplikasi ini?", "Pesan", "Ya", "", "Tidak", Null) = DialogResponse.POSITIVE Then
+			Activity.Finish
+		Else
+			Return True
+		End If
+	End If
+End Sub
+
+Sub AnotherDatePicker1_Closed (Cancelled As Boolean, Date As Long)
+	If Not(Cancelled) Then
+		Dim year As Int = DateTime.GetYear(Date) 	'get tahun dari ADP yang diset
+		Dim month As Int = DateTime.GetMonth(Date) 
+		Dim day As Int = DateTime.GetDayOfMonth(Date) 
+		Dim hari As Int = DateTime.GetDayOfWeek(Date)
+		Dim p As Period
+		Dim tgl_hasil As Long
+		Dim h_ke As String
+		'lblResult.Text = nama_hari(hari) & "/" & hari & "/" & day & "/" & month & "/" & year
+		'tgl_meninggal = month & "/" & day & "/" & year
+		'lblResult.Text = ""
+		lblResult.Text = "Meninggal : "
+		lblResult.Text = lblResult.Text & nama_hari(DateTime.GetDayOfWeek(Date))
+		lblResult.Text = lblResult.Text & ", " & DateTime.GetDayOfMonth(Date)
+		lblResult.Text = lblResult.Text & "/" & DateTime.GetMonth(Date)
+		lblResult.Text = lblResult.Text & "/" & DateTime.GetYear(Date)
+		lblResult.Text = lblResult.Text & CRLF
+		For a=1 To 6
+			Select a
+				Case 1
+					p.Days = 5	'rumus fix
+					h_ke = "Hari ke-7"
+				Case 2
+					p.Days = 38	'rumus fix
+					h_ke = "Hari ke-40"
+				Case 3
+					p.Days = 98	'rumus fix
+					h_ke = "Hari ke-100"
+				Case 4
+					p.Days = 360 - 7	'rumus fix
+					h_ke = "Pendak 1 tahun"
+				Case 5
+					p.Days = 720 - 7
+					h_ke = "Pendak 2 tahun"
+				Case 6
+					p.Days = 1000
+					h_ke = "Hari ke-1000"
+			End Select
+			
+			tgl_hasil = DateUtils.AddPeriod(Date, p)
+			
+			If a = 5 Or a = 6 Then
+				lblResult.Text = lblResult.Text & h_ke & " : "
+				lblResult.Text = lblResult.Text & "---Tunggu update apk---"
+				lblResult.Text = lblResult.Text & CRLF
+			Else
+				lblResult.Text = lblResult.Text & h_ke & " : " 
+				lblResult.Text = lblResult.Text & nama_hari(DateTime.GetDayOfWeek(tgl_hasil))
+				lblResult.Text = lblResult.Text & ", " & DateTime.GetDayOfMonth(tgl_hasil)
+				lblResult.Text = lblResult.Text & "/" & DateTime.GetMonth(tgl_hasil)
+				lblResult.Text = lblResult.Text & "/" & DateTime.GetYear(tgl_hasil)
+				lblResult.Text = lblResult.Text & CRLF
+			End If
+			'a = a + 1
+		Next
+	End If
+End Sub
+
+Sub nama_hari(x As Int)
+	Select x
+		Case 1
+			Return "Minggu"
+		Case 2
+			Return "Senin"
+		Case 3
+			Return "Selasa"
+		Case 4
+			Return "Rabu"
+		Case 5
+			Return "Kamis"
+		Case 6
+			Return "Jumat"
+		Case 7
+			Return "Sabtu"
+	End Select
+End Sub
+
+Sub Activity_Resume
+	
+End Sub
+
+Sub Activity_Pause (UserClosed As Boolean)
+
+End Sub
